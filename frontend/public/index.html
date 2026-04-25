@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=5.0" />
+    
+    <meta name="theme-color" content="#1a1a1a" /> 
+    
+    <title>Santos Barbearia | Estilo Premium e Cuidado Excepcional</title>
+    <meta name="description" content="Agende seu horário na Santos Barbearia. Cortes modernos, barboterapia, produtos premium e atendimento de excelência." />
+    <meta name="keywords" content="barbearia, corte de cabelo masculino, barba, barboterapia, agendamento online, Santos Barbearia" />
+    <meta name="author" content="Santos Barbearia" />
+    <meta name="robots" content="index, follow" /> <meta property="og:type" content="website" />
+    <meta property="og:title" content="Santos Barbearia | Estilo Premium" />
+    <meta property="og:description" content="Agende seu horário conosco. Cortes modernos e profissionais experientes." />
+    <meta property="og:image" content="/logo-santos.png" />
+    <meta property="og:site_name" content="Santos Barbearia" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Santos Barbearia" />
+    <meta name="twitter:description" content="Estilo e qualidade para o homem moderno." />
+    <meta name="twitter:image" content="/logo-santos.png" />
+
+    <link rel="icon" type="image/png" href="/logo-santos.png" />
+    <link rel="apple-touch-icon" href="/logo-santos.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+    <script>
+      window.addEventListener("error", function(e) {
+        if (e.error instanceof DOMException && e.error.name === "DataCloneError" && e.message && e.message.includes("PerformanceServerTiming")) {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+        }
+      }, true);
+    </script>
+
+    <style>
+      /* Este CSS roda ANTES do React carregar, garantindo que o usuário não veja uma tela branca */
+      body {
+        margin: 0;
+        background-color: #0f172a; /* Cor escura moderna */
+      }
+      #initial-loader {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        color: #ffffff;
+        font-family: 'Inter', sans-serif;
+      }
+      .spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        border-top-color: #d4af37; /* Cor dourada (Premium) */
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 24px;
+      }
+      .loader-text {
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        color: #d4af37;
+        text-transform: uppercase;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    </style>
+  </head>
+  
+  <body>
+    <noscript>
+      <div style="padding: 20px; text-align: center; color: white; background: #dc2626; font-family: sans-serif; font-weight: bold;">
+        Aviso: Você precisa ativar o JavaScript no seu navegador para agendar seu horário e acessar o sistema da Santos Barbearia.
+      </div>
+    </noscript>
+    
+    <div id="root">
+      <div id="initial-loader">
+        <div class="spinner"></div>
+        <div class="loader-text">Santos Barbearia</div>
+      </div>
+    </div>
+
+  </body>
+</html>

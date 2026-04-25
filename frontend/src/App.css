@@ -1,0 +1,14 @@
+.App {
+  min-height: 100vh;
+  background-color: hsl(var(--background));
+}
+
+/* Remove default centering */
+.App-header {
+  display: block;
+}
+
+/* Hero gradient overlay */
+.hero-gradient {
+  background: linear-gradient(135deg, rgba(192, 122, 58, 0.18) 0%, rgba(250, 247, 241, 0.0) 55%, rgba(30, 143, 179, 0.10) 100%);
+}
