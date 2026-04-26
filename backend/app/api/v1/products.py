@@ -55,7 +55,7 @@ async def list_products(
     limit: int = Query(20, ge=1, le=100)
 ):
     db = get_database()
-    query = {"is_active": True} if active_only else {}
+    query = {"active": True} if active_only else {}
     
     cursor = db.products.find(query).skip(skip).limit(limit)
     products = await cursor.to_list(length=limit)
