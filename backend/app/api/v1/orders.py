@@ -30,7 +30,8 @@ class OrderResponse(BaseModel):
 @router.post("/orders", response_model=OrderResponse, tags=["Orders"])
 async def create_order(order: OrderCreate):
     db = get_database()
-    order_id = f"ord_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    import uuid
+    order_id = f"ord_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:6]}"
     
     # Calcula o total
     total = 0
