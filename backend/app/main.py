@@ -52,7 +52,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "*",
-        "https://barber-git-main-hsstackfulls-projects.vercel.app"
+        "barber-six-red.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
