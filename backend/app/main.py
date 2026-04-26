@@ -11,6 +11,8 @@ from contextlib import asynccontextmanager
 import logging
 import time
 from datetime import datetime, timezone
+from app.api.v1 import orders
+
 
 from app.core.config import get_settings
 from app.core.database import connect_to_mongo, close_mongo_connection, create_indexes
@@ -81,7 +83,7 @@ app.include_router(appointments.router, prefix="/api/v1", tags=["Appointments"])
 app.include_router(services.router, prefix="/api/v1", tags=["Services"])
 app.include_router(products.router, prefix="/api/v1", tags=["Products"])
 app.include_router(admin.router, prefix="/api/v1", tags=["Admin"])
-
+app.include_router(orders.router, prefix="/api/v1", tags=["Orders"])
 # ====================== HEALTH & ROOT ======================
 @app.get("/", tags=["Health"])
 async def root():
