@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 from datetime import datetime, timezone
 from typing import List, Optional
 from app.core.security import get_current_user, require_admin
+from app.core.database import get_database
 
 router = APIRouter()
 
