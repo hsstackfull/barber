@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Scissors } from 'lucide-react';
 import { toast } from 'sonner';
 
+const API_URL = process.env.REACT_APP_API_URL || 'https://barber0.onrender.com';
+
 const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 const Field = ({ id, label, type, placeholder, value, onChange, disabled, icon, error, children }) => (
@@ -64,33 +66,42 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!validate()) return;
+
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://barber0.onrender.com/api/auth/login', {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: form.email.trim().toLowerCase(), password: form.password }),
+        body: JSON.stringify({
+          email: form.email.trim().toLowerCase(),
+          password: form.password,
+        }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const data = await response.json();
         localStorage.setItem('token', data.access_token);
-        localStorage.setItem('userRole', data.role);
+        localStorage.setItem('userRole', data.role || 'client');
         if (data.name) localStorage.setItem('userName', data.name);
         if (data.email) localStorage.setItem('userEmail', data.email);
 
         toast.success('Bem-vindo de volta!');
-        if (data.role === 'admin') navigate('/admin');
-        else navigate('/');
+        
+        if (data.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
       } else {
-        const errorData = await response.json().catch(() => null);
-        const msg = errorData?.detail || 'E-mail ou senha incorretos.';
+        const msg = data?.detail || 'E-mail ou senha incorretos.';
         toast.error(msg);
         setErrors({ password: 'Credenciais inválidas. Tente novamente.' });
       }
-    } catch {
-      toast.error('Erro de conexão com o servidor.');
+    } catch (error) {
+      console.error('Erro de conexão:', error);
+      toast.error('Erro de conexão com o servidor. Tente novamente.');
     } finally {
       setIsLoading(false);
     }
@@ -108,17 +119,14 @@ const Login = () => {
         className="hidden lg:flex flex-col justify-between w-[420px] flex-shrink-0 p-12 relative overflow-hidden"
         style={{ background: 'linear-gradient(160deg, #292524 0%, #1c1917 100%)' }}
       >
-        {/* Linhas decorativas */}
         <div className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 40px, #d6d3d1 40px, #d6d3d1 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, #d6d3d1 40px, #d6d3d1 41px)',
           }}
         />
-        {/* Círculo decorativo */}
         <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full border border-amber-500/10" />
         <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full border border-amber-500/10" />
 
-        {/* Logo */}
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center">
@@ -130,7 +138,6 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Texto central */}
         <div className="relative z-10 space-y-6">
           <div className="w-12 h-[2px] bg-amber-500" />
           <h1
@@ -146,17 +153,13 @@ const Login = () => {
           </p>
         </div>
 
-        {/* Rodapé do painel */}
         <div className="relative z-10">
           <p className="text-stone-600 text-xs">© 2025 Santos Barbearia. Todos os direitos reservados.</p>
         </div>
       </div>
 
-      {/* Painel do formulário */}
       <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
         <div className="w-full max-w-md space-y-8">
-
-          {/* Cabeçalho mobile */}
           <div className="lg:hidden flex items-center gap-3 mb-6">
             <div className="w-9 h-9 bg-amber-500 rounded-xl flex items-center justify-center">
               <Scissors size={16} className="text-stone-900" />
@@ -166,7 +169,6 @@ const Login = () => {
             </span>
           </div>
 
-          {/* Título */}
           <div className="space-y-2">
             <h2
               className="text-3xl font-black text-white tracking-tight"
@@ -185,7 +187,6 @@ const Login = () => {
             </p>
           </div>
 
-          {/* Formulário */}
           <form onSubmit={handleLogin} className="space-y-5" noValidate>
             <Field
               id="email"
@@ -213,8 +214,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500
-                           hover:text-stone-300 transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300 transition-colors"
                 tabIndex={-1}
                 aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
               >
@@ -222,7 +222,6 @@ const Login = () => {
               </button>
             </Field>
 
-            {/* Link esqueci senha */}
             <div className="text-right -mt-2">
               <Link
                 to="/forgot-password"
@@ -232,7 +231,6 @@ const Login = () => {
               </Link>
             </div>
 
-            {/* Botão */}
             <button
               type="submit"
               disabled={isLoading}
@@ -246,10 +244,7 @@ const Login = () => {
                 relative overflow-hidden group
               "
             >
-              <span
-                className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%]
-                           transition-transform duration-500 skew-x-12"
-              />
+              <span className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 skew-x-12" />
               {isLoading ? (
                 <>
                   <span className="w-4 h-4 border-2 border-stone-900/30 border-t-stone-900 rounded-full animate-spin" />
@@ -264,14 +259,12 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Divisor */}
           <div className="flex items-center gap-4">
             <div className="flex-1 h-px bg-stone-800" />
             <span className="text-xs text-stone-600 uppercase tracking-widest">ou</span>
             <div className="flex-1 h-px bg-stone-800" />
           </div>
 
-          {/* Link registro */}
           <p className="text-center text-sm text-stone-500">
             Novo por aqui?{' '}
             <Link
