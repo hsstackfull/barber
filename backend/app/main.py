@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 import logging
 import time
+from datetime import datetime, timezone
 
 from app.core.config import get_settings
 from app.core.database import connect_to_mongo, close_mongo_connection, create_indexes
