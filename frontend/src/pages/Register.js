@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Scissors, CheckCircle2, XCircle, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
+const API_URL = process.env.REACT_APP_API_URL || 'https://barber0.onrender.com';
+
 /* ── Validações ── */
 const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 const validatePassword = (password) => ({
@@ -26,7 +28,6 @@ const PasswordStrength = ({ password }) => {
 
   return (
     <div className="mt-3 space-y-3 px-1">
-      {/* Barra de força */}
       <div className="flex items-center gap-2">
         <div className="flex gap-1 flex-1">
           {[1, 2, 3].map((i) => (
@@ -44,7 +45,6 @@ const PasswordStrength = ({ password }) => {
         </span>
       </div>
 
-      {/* Regras */}
       <div className="grid grid-cols-1 gap-1">
         {[
           { key: 'length', label: 'Mínimo 6 caracteres' },
@@ -172,7 +172,7 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://barber-v20b.onrender.com/api/auth/signup', {
+      const response = await fetch(`${API_URL}/api/v1/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -210,11 +210,8 @@ const Register = () => {
         background: 'radial-gradient(ellipse at 80% 50%, #1c1917 0%, #0c0a09 60%, #1c1917 100%)',
       }}
     >
-      {/* Painel do formulário */}
       <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
         <div className="w-full max-w-md space-y-7">
-
-          {/* Logo mobile */}
           <div className="lg:hidden flex items-center gap-3">
             <div className="w-9 h-9 bg-amber-500 rounded-xl flex items-center justify-center">
               <Scissors size={16} className="text-stone-900" />
@@ -224,7 +221,6 @@ const Register = () => {
             </span>
           </div>
 
-          {/* Título */}
           <div className="space-y-2">
             <h2
               className="text-3xl font-black text-white tracking-tight"
@@ -243,7 +239,6 @@ const Register = () => {
             </p>
           </div>
 
-          {/* Formulário */}
           <form onSubmit={handleRegister} className="space-y-5" noValidate>
             <Field
               id="name"
@@ -284,8 +279,7 @@ const Register = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500
-                             hover:text-stone-300 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300 transition-colors"
                   tabIndex={-1}
                   aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                 >
@@ -295,7 +289,6 @@ const Register = () => {
               <PasswordStrength password={form.password} />
             </div>
 
-            {/* Botão */}
             <button
               type="submit"
               disabled={isLoading}
@@ -309,10 +302,7 @@ const Register = () => {
                 relative overflow-hidden group mt-2
               "
             >
-              <span
-                className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%]
-                           transition-transform duration-500 skew-x-12"
-              />
+              <span className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 skew-x-12" />
               {isLoading ? (
                 <>
                   <span className="w-4 h-4 border-2 border-stone-900/30 border-t-stone-900 rounded-full animate-spin" />
@@ -327,7 +317,6 @@ const Register = () => {
             </button>
           </form>
 
-          {/* Termos */}
           <p className="text-center text-xs text-stone-600 leading-relaxed">
             Ao criar uma conta, concorda com os nossos{' '}
             <span className="text-stone-400 hover:text-amber-400 cursor-pointer transition-colors">Termos de Serviço</span>
@@ -337,22 +326,18 @@ const Register = () => {
         </div>
       </div>
 
-      {/* Painel lateral decorativo */}
       <div
         className="hidden lg:flex flex-col justify-between w-[420px] flex-shrink-0 p-12 relative overflow-hidden"
         style={{ background: 'linear-gradient(160deg, #292524 0%, #1c1917 100%)' }}
       >
-        {/* Grade decorativa */}
         <div className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 40px, #d6d3d1 40px, #d6d3d1 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, #d6d3d1 40px, #d6d3d1 41px)',
           }}
         />
-        {/* Círculo decorativo */}
         <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full border border-amber-500/10" />
         <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full border border-amber-500/10" />
 
-        {/* Logo */}
         <div className="relative z-10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center">
@@ -364,7 +349,6 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Benefícios */}
         <div className="relative z-10 space-y-8">
           <div className="space-y-2">
             <div className="w-12 h-[2px] bg-amber-500" />
@@ -394,7 +378,6 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Rodapé */}
         <div className="relative z-10">
           <p className="text-stone-600 text-xs">© 2025 Santos Barbearia. Todos os direitos reservados.</p>
         </div>
