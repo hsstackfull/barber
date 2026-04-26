@@ -129,3 +129,9 @@ async def delete_product(
         raise HTTPException(status_code=404, detail="Produto não encontrado")
     
     return {"message": "Produto deletado com sucesso"}
+    
+@router.get("/products/categories", tags=["Products"])
+async def get_categories():
+    db = get_database()
+    categories = await db.products.distinct("category")
+    return {"categories": categories}
