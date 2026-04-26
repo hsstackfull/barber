@@ -122,3 +122,32 @@ if __name__ == "__main__":
         reload=settings.DEBUG,
         log_level="info"
     )
+
+
+# ====================== ROTAS DE PAGAMENTO ======================
+@app.get("/payment/success", tags=["Payment"])
+async def payment_success(ref: str = None):
+    return {
+        "status": "success",
+        "message": "Pagamento realizado com sucesso!",
+        "order_id": ref,
+        "redirect": "https://barber-git-main-hsstackfulls-projects.vercel.app/payment-success"
+    }
+
+@app.get("/payment/failure", tags=["Payment"])
+async def payment_failure(ref: str = None):
+    return {
+        "status": "failure",
+        "message": "Pagamento não realizado.",
+        "order_id": ref,
+        "redirect": "https://barber-git-main-hsstackfulls-projects.vercel.app/payment-failure"
+    }
+
+@app.get("/payment/pending", tags=["Payment"])
+async def payment_pending(ref: str = None):
+    return {
+        "status": "pending",
+        "message": "Pagamento pendente.",
+        "order_id": ref,
+        "redirect": "https://barber-git-main-hsstackfulls-projects.vercel.app/payment-pending"
+    }
