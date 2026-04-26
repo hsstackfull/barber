@@ -48,10 +48,12 @@ app = FastAPI(
 )
 
 # ====================== MIDDLEWARES ======================
-# CORS - Permite todas as origens (incluindo Vercel que muda de URL)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "*",
+        "https://barber-git-main-hsstackfulls-projects.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
