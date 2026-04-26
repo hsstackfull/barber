@@ -1,39 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, Field
-from datetime import datetime, timezone
-from typing import List, Optional
-from app.core.security import require_admin
-from app.core.database import get_database
-
-router = APIRouter()
-
-class OrderItem(BaseModel):
-    product_id: str
-    quantity: int = Field(..., ge=1)
-
-class OrderCreate(BaseModel):
-    customer_name: str
-    customer_email: str
-    customer_phone: str
-    items: List[OrderItem]
-
-class OrderResponse(BaseModel):
-    order_id: str
-    customer_name: str
-    customer_email: str
-    customer_phone: str
-    items: List[dict]
-    total: float
-    status: str = "pending"
-    created_at: datetime
+import os
+import mercadopago
 
 @router.post("/orders", response_model=OrderResponse, tags=["Orders"])
 async def create_order(order: OrderCreate):
     db = get_database()
-    import uuid
     order_id = f"ord_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:6]}"
     
-    # Calcula o total
+    # Calcula o total e prepara itens
     total = 0
     items_with_price = []
     
@@ -65,19 +38,36 @@ async def create_order(order: OrderCreate):
     }
     
     await db.orders.insert_one(order_doc)
-    return order_doc
-
-@router.get("/orders", tags=["Orders"])
-async def list_orders(status: Optional[str] = None):
-    db = get_database()
-    query = {"status": status} if status else {}
     
-    cursor = db.orders.find(query).sort("created_at", -1)
-    orders = await cursor.to_list(length=50)
+    # ====================== MERCADO PAGO ======================
+    sdk = mercadopago.SDK(os.getenv("MERCADOPAGO_ACCESS_TOKEN"))
     
-    return [serialize_mongo_doc(o) for o in orders]
-
-def serialize_mongo_doc(doc):
-    if doc and "_id" in doc:
-        doc["_id"] = str(doc["_id"])
-    return doc
+    preference_data = {
+        "items": [
+            {
+                "title": f"Pedido {order_id}",
+                "quantity": 1,
+                "unit_price": float(total),
+                "currency_id": "BRL"
+            }
+        ],
+        "payer": {
+            "name": order.customer_name,
+            "email": order.customer_email
+        },
+        "back_urls": {
+            "success": "https://barber0.onrender.com/payment/success",
+            "failure": "https://barber0.onrender.com/payment/failure",
+            "pending": "https://barber0.onrender.com/payment/pending"
+        },
+        "auto_return": "approved",
+        "external_reference": order_id
+    }
+    
+    preference_response = sdk.preference().create(preference_data)
+    payment_url = preference_response["response"]["init_point"]
+    
+    return {
+        **order_doc,
+        "payment_url": payment_url
+    }
