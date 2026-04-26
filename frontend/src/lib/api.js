@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://barber0.onrender.com';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// Adicione isto para suportar autenticação se necessário
+// Adiciona token automaticamente em todas as requisições
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -15,48 +15,53 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Services
-export const getServices = () => api.get('/api/services');
-export const getService = (id) => api.get(`/api/services/${id}`);
-export const createService = (data) => api.post('/api/services', data);
-export const updateService = (id, data) => api.put(`/api/services/${id}`, data);
-export const deleteService = (id) => api.delete(`/api/services/${id}`);
+// ==================== AUTH ====================
+export const login = (data) => api.post('/api/v1/auth/login', data);
+export const register = (data) => api.post('/api/v1/auth/register', data);
+export const getMe = () => api.get('/api/v1/auth/me');
+export const logout = (token) => api.post('/api/v1/auth/logout', { token });
 
-// Products
-export const getProducts = (category) => 
-  api.get('/api/products', { params: category ? { category } : {} });
-export const getProduct = (id) => api.get(`/api/products/${id}`);
-export const getCategories = () => api.get('/api/products/categories');
-export const getLowStockProducts = () => api.get('/api/products/low-stock');
-export const createProduct = (data) => api.post('/api/products', data);
-export const updateProduct = (id, data) => api.put(`/api/products/${id}`, data);
+// ==================== SERVICES ====================
+export const getServices = () => api.get('/api/v1/services');
+export const getService = (id) => api.get(`/api/v1/services/${id}`);
+export const createService = (data) => api.post('/api/v1/services', data);
+export const updateService = (id, data) => api.put(`/api/v1/services/${id}`, data);
+export const deleteService = (id) => api.delete(`/api/v1/services/${id}`);
+
+// ==================== PRODUCTS ====================
+export const getProducts = (category = null) => 
+  api.get('/api/v1/products', { params: category ? { category } : {} });
+export const getProduct = (id) => api.get(`/api/v1/products/${id}`);
+export const getCategories = () => api.get('/api/v1/products/categories');
+export const getLowStockProducts = () => api.get('/api/v1/products/low-stock');
+export const createProduct = (data) => api.post('/api/v1/products', data);
+export const updateProduct = (id, data) => api.put(`/api/v1/products/${id}`, data);
 export const adjustStock = (id, adjustment) => 
-  api.post(`/api/products/${id}/adjust-stock`, null, { params: { adjustment } });
+  api.post(`/api/v1/products/${id}/adjust-stock`, null, { params: { adjustment } });
 
-// Appointments
-export const getAppointments = (params) => api.get('/api/appointments', { params });
+// ==================== APPOINTMENTS ====================
+export const getAppointments = (params) => api.get('/api/v1/appointments', { params });
 export const getAvailableSlots = (date, serviceId) => 
-  api.get('/api/appointments/available-slots', { params: { date, service_id: serviceId } });
-export const createAppointment = (data) => api.post('/api/appointments', data);
+  api.get('/api/v1/appointments/available-slots', { params: { date, service_id: serviceId } });
+export const createAppointment = (data) => api.post('/api/v1/appointments', data);
 export const updateAppointmentStatus = (id, status) => 
-  api.put(`/api/appointments/${id}/status`, null, { params: { status } });
+  api.put(`/api/v1/appointments/${id}/status`, null, { params: { status } });
 
-// Orders
+// ==================== ORDERS ====================
 export const getOrders = (status) => 
-  api.get('/api/orders', { params: status ? { status } : {} });
-export const createOrder = (data) => api.post('/api/orders', data);
+  api.get('/api/v1/orders', { params: status ? { status } : {} });
+export const createOrder = (data) => api.post('/api/v1/orders', data);
 export const updateOrderStatus = (id, status) => 
-  api.put(`/api/orders/${id}/status`, null, { params: { status } });
+  api.put(`/api/v1/orders/${id}/status`, null, { params: { status } });
 
-// Dashboard & Admin Settings
-export const getDashboardStats = () => api.get('/api/dashboard/stats');
+// ==================== ADMIN ====================
+export const getDashboardStats = () => api.get('/api/v1/admin/dashboard');
 export const getPopularServices = (limit = 5) => 
-  api.get('/api/dashboard/popular-services', { params: { limit } });
+  api.get('/api/v1/admin/dashboard/popular-services', { params: { limit } });
 export const getRevenueChart = (days = 7) => 
-  api.get('/api/dashboard/revenue-chart', { params: { days } });
+  api.get('/api/v1/admin/dashboard/revenue-chart', { params: { days } });
+export const getAdminSettings = () => api.get('/api/v1/admin/settings');
+export const updateAdminSettings = (data) => api.post('/api/v1/admin/settings', data);
+export const getCustomers = () => api.get('/api/v1/admin/customers');
 
-// NOVAS ROTAS DE CONFIGURAÇÃO
-export const getAdminSettings = () => api.get('/api/admin/settings');
-export const updateAdminSettings = (data) => api.post('/api/admin/settings', data);
-
-export const getCustomers = () => api.get('/api/admin/customers');
+export default api;
